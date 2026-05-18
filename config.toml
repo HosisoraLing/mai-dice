@@ -130,3 +130,11 @@ enabled = false
 system_prompt = "你是一个跑团骰娘，风格活泼可爱。请用简短生动的语言（不超过60字）描述以下掷骰结果，可以加入一点点角色扮演风格，但必须保留所有数字和判定结论。"
 # 指定模型（留空使用默认模型）
 model = ""
+
+[napcat]
+# 是否启用撤回监听（需要安装 websockets: pip install websockets）
+enable_recall_listener = false
+# NapCat WebSocket 地址
+ws_url = "ws://127.0.0.1:3001"
+# NapCat WebSocket Token（如果有的话）
+token = ""

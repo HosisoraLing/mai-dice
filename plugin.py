@@ -83,6 +83,18 @@ class LLMConfig(PluginConfigBase):
     )
 
 
+class NapCatConfig(PluginConfigBase):
+    """NapCat 配置"""
+
+    __ui_label__ = "NapCat 设置"
+    __ui_icon__ = "webhook"
+    __ui_order__ = 4
+
+    enable_recall_listener: bool = Field(default=False, description="是否启用撤回监听")
+    ws_url: str = Field(default="ws://127.0.0.1:3001", description="NapCat WebSocket 地址")
+    token: str = Field(default="", description="NapCat WebSocket Token")
+
+
 class TRPGDiceConfig(PluginConfigBase):
     """TRPG 骰娘配置"""
 
@@ -90,6 +102,7 @@ class TRPGDiceConfig(PluginConfigBase):
     dice: DiceConfig = Field(default_factory=DiceConfig)
     output: OutputConfig = Field(default_factory=OutputConfig)
     llm_mode: LLMConfig = Field(default_factory=LLMConfig)
+    napcat: NapCatConfig = Field(default_factory=NapCatConfig)
 
 
 class TRPGDicePlugin(MaiBotPlugin):
@@ -100,6 +113,7 @@ class TRPGDicePlugin(MaiBotPlugin):
     def __init__(self):
         super().__init__()
         self.storage: StorageManager | None = None
+        self.recall_listener = None
         # 先攻列表: group_id -> [(name, value, acted), ...]
         self._initiatives: dict[str, list[tuple[str, int, bool]]] = {}
     
@@ -114,11 +128,56 @@ class TRPGDicePlugin(MaiBotPlugin):
         self.storage = StorageManager(self.ctx, data_dir)
         await self.storage.initialize()
         set_config(self.get_plugin_config_data())
+        
+        # 启动撤回监听器
+        await self._start_recall_listener()
+        
         self.ctx.logger.info("TRPG 骰娘插件已加载")
     
     async def on_unload(self) -> None:
         """插件卸载"""
+        # 停止撤回监听器
+        await self._stop_recall_listener()
         self.ctx.logger.info("TRPG 骰娘插件已卸载")
+    
+    async def _start_recall_listener(self) -> None:
+        """启动撤回监听器"""
+        if not self.config.napcat.enable_recall_listener:
+            return
+        
+        try:
+            from .component.recall_listener import create_recall_listener
+            
+            self.recall_listener = create_recall_listener(
+                ws_url=self.config.napcat.ws_url,
+                token=self.config.napcat.token,
+                on_recall=self._on_message_recall,
+            )
+            
+            if self.recall_listener:
+                await self.recall_listener.start()
+                self.ctx.logger.info(f"撤回监听器已启动: {self.config.napcat.ws_url}")
+            else:
+                self.ctx.logger.warning("撤回监听器启动失败，请安装 websockets: pip install websockets")
+                
+        except Exception as e:
+            self.ctx.logger.error(f"启动撤回监听器失败: {e}")
+    
+    async def _stop_recall_listener(self) -> None:
+        """停止撤回监听器"""
+        if self.recall_listener:
+            await self.recall_listener.stop()
+            self.recall_listener = None
+    
+    async def _on_message_recall(self, group_id: str, message_id: str) -> None:
+        """处理消息撤回事件"""
+        try:
+            if self.storage:
+                deleted = await self.storage.delete_message_by_id(group_id, message_id)
+                if deleted:
+                    self.ctx.logger.info(f"已从日志中删除撤回的消息: group={group_id}, msg_id={message_id}")
+        except Exception as e:
+            self.ctx.logger.error(f"处理撤回事件失败: {e}")
     
     async def on_config_update(self, scope: str, config_data: dict, version: str) -> None:
         """配置更新"""

@@ -317,6 +317,7 @@ class StorageManager:
         nickname: str,
         content: str,
         is_dice: bool = False,
+        message_id: str = "",
     ) -> bool:
         """添加日志消息"""
         try:
@@ -333,6 +334,7 @@ class StorageManager:
                     "nickname": nickname,
                     "content": content,
                     "is_dice": is_dice,
+                    "message_id": message_id,
                 }
                 log["messages"].append(message)
                 log["updated_at"] = int(time.time())
@@ -383,6 +385,34 @@ class StorageManager:
         except Exception as e:
             self.logger.error(f"列出日志失败: {e}")
             return []
+    
+    async def delete_message_by_id(self, group_id: str, message_id: str) -> bool:
+        """根据消息 ID 删除日志中的消息"""
+        try:
+            log = await self.get_active_log(group_id)
+            if not log:
+                return False
+            
+            messages = log.get("messages", [])
+            original_count = len(messages)
+            
+            # 过滤掉匹配的消息（通过 message_id 字段）
+            log["messages"] = [
+                msg for msg in messages
+                if str(msg.get("message_id", "")) != str(message_id)
+            ]
+            
+            # 如果有消息被删除，保存
+            if len(log["messages"]) < original_count:
+                log["updated_at"] = int(time.time())
+                self._save_logs()
+                return True
+            
+            return False
+            
+        except Exception as e:
+            self.logger.error(f"删除消息失败: {e}")
+            return False
     
     # ==================== 群组配置操作 ====================
     
