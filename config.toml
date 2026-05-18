@@ -1,0 +1,130 @@
+# TRPG 骰娘配置文件
+
+config_version = "1.0.0"
+
+[dice]
+# 默认骰子面数
+default_faces = 100
+# 最大骰子数量
+max_dice_count = 100
+# 最大骰子面数
+max_faces = 10000
+
+[output]
+# 掷骰结果模板
+# 可用变量: {nickname}, {expression}, {result}, {detail}
+roll_result = "{nickname}掷骰 {expression} = {result}"
+
+# 技能检定成功模板
+# 可用变量: {nickname}, {skill_name}, {roll}, {skill_value}, {result_type}
+skill_check_success = "{nickname}进行{skill_name}检定: {roll}/{skill_value} 成功！"
+
+# 技能检定失败模板
+skill_check_fail = "{nickname}进行{skill_name}检定: {roll}/{skill_value} 失败！"
+
+# 大成功模板
+skill_critical_success = "{nickname}进行{skill_name}检定: {roll}/{skill_value} 大成功！"
+
+# 大失败模板
+skill_critical_fail = "{nickname}进行{skill_name}检定: {roll}/{skill_value} 大失败！"
+
+# 奖励骰检定模板
+skill_bonus_dice = "{nickname}进行{skill_name}检定(奖励骰x{dice_count}): {roll}/{skill_value} {result_type}！"
+
+# 惩罚骰检定模板
+skill_penalty_dice = "{nickname}进行{skill_name}检定(惩罚骰x{dice_count}): {roll}/{skill_value} {result_type}！"
+
+# SAN Check 成功模板
+san_success = "{nickname}进行理智检定: {roll}/{san_value} 成功！理智损失{loss}点。"
+
+# SAN Check 失败模板
+san_fail = "{nickname}进行理智检定: {roll}/{san_value} 失败！理智损失{loss}点。"
+
+# 人物卡创建模板
+character_created = "人物卡「{name}」创建成功！"
+
+# 人物卡切换模板
+character_switched = "已切换到人物卡「{name}」"
+
+# 先攻掷骰模板
+initiative_roll = "{nickname}掷先攻: {roll} (调整值{adjust})"
+
+# 先攻列表模板
+initiative_list = "当前先攻顺序:\n{list}"
+
+# 回合结束模板
+turn_end = "当前回合结束，轮到 {next_char} 行动！"
+
+[coc_rules]
+# CoC 大成功/大失败规则
+# 1: 1大成功, 96-100大失败
+# 2: 1-5大成功, 96-100大失败
+# 3: 1大成功, 100大失败
+# 4: 1-5大成功, 100大失败
+# 5: 1大成功, 99-100大失败
+rule_type = 1
+
+[initiative]
+# 先攻骰子面数
+dice_faces = 20
+# 先攻默认调整值
+default_adjust = 0
+
+[sanity]
+# 临时疯狂症状列表
+temporary_crazy = [
+    "失忆症：调查员忘记自己是谁",
+    "假性残疾：调查员出现心因性的失明或失聪",
+    "暴力倾向：调查员变得极具攻击性",
+    "偏执妄想：调查员陷入严重的偏执",
+    "人际依赖：调查员过度依赖他人",
+    "昏厥：调查员失去意识",
+    "逃避行为：调查员试图逃离现场",
+    "歇斯底里：调查员陷入狂笑或痛哭",
+    "恐惧症：调查员产生强烈的恐惧",
+    "躁狂症：调查员陷入异常兴奋"
+]
+
+# 长期疯狂症状列表
+long_term_crazy = [
+    "健忘症：调查员忘记部分记忆",
+    "反社会行为：调查员表现出反社会倾向",
+    "恐惧症：调查员产生新的恐惧",
+    "躁狂/抑郁：调查员情绪波动剧烈",
+    "偏执狂：调查员持续多疑",
+    "敏感化：调查员对某些刺激过度敏感",
+    "性功能障碍：调查员出现性功能问题",
+    "躯体转换障碍：调查员出现身体症状"
+]
+
+[character]
+# CoC 角色属性骰子公式
+coc_strength = "3d6*5"
+coc_constitution = "3d6*5"
+coc_size = "(2d6+6)*5"
+coc_dexterity = "3d6*5"
+coc_appearance = "3d6*5"
+coc_intelligence = "(2d6+6)*5"
+coc_power = "3d6*5"
+coc_education = "(2d6+6)*5"
+coc_luck = "3d6*5"
+
+# DnD 角色属性骰子公式
+dnd_method = "4d6k3"
+
+[growth]
+# 技能成长阈值
+# 检定成功时，掷骰大于技能值则技能增长
+growth_threshold = 0
+# 技能成长骰子
+growth_dice = "1d10"
+# 技能上限
+skill_max = 99
+
+[llm_mode]
+# 是否启用 LLM 美化模式
+enabled = false
+# LLM 系统提示词
+system_prompt = "你是一个跑团骰娘，风格活泼可爱。请用简短生动的语言（不超过60字）描述以下掷骰结果，可以加入一点点角色扮演风格，但必须保留所有数字和判定结论。"
+# 指定模型（留空使用默认模型）
+model = ""
