@@ -959,10 +959,24 @@ class TRPGDicePlugin(MaiBotPlugin):
             elif action in ("export", "get"):
                 if len(args) < 2:
                     text = "用法: .log export <日志名>"
+                    await self.ctx.send.text(text, stream_id)
                 else:
                     log_name = args[1]
-                    success, msg = await self.storage.export_log(group_id, log_name)
-                    text = msg if success else f"导出失败: {msg}"
+                    success, msg, content = await self.storage.export_log(group_id, log_name)
+                    if success and content:
+                        # 发送文件
+                        import base64
+                        file_b64 = base64.b64encode(content).decode("utf-8")
+                        filename = f"{group_id}_{log_name}.json"
+                        await self.ctx.send.custom(
+                            "file",
+                            {"file": file_b64, "filename": filename},
+                            stream_id,
+                        )
+                        await self.ctx.send.text(msg, stream_id)
+                    else:
+                        await self.ctx.send.text(f"导出失败: {msg}", stream_id)
+                return
                     
             else:
                 text = "未知操作，可用: new, on, off, end, del, list, export"

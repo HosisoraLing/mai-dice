@@ -485,12 +485,12 @@ class StorageManager:
         
         return lines
     
-    async def export_log(self, group_id: str, name: str) -> tuple[bool, str]:
-        """导出日志为染色器格式"""
+    async def export_log(self, group_id: str, name: str) -> tuple[bool, str, Optional[bytes]]:
+        """导出日志为染色器格式，返回 (成功, 消息, 文件内容)"""
         grp = await self._load_group(group_id)
         
         if name not in grp:
-            return False, f"未找到日志「{name}」"
+            return False, f"未找到日志「{name}」", None
         
         sec = grp[name]
         export_data = {"version": 1, "items": []}
@@ -513,11 +513,12 @@ class StorageManager:
         file_path = os.path.join(exports_dir, f"{group_id}_{name}.json")
         
         try:
-            with open(file_path, "w", encoding="utf-8") as f:
-                json.dump(export_data, f, ensure_ascii=False, indent=2)
-            return True, file_path
+            content = json.dumps(export_data, ensure_ascii=False, indent=2).encode("utf-8")
+            with open(file_path, "wb") as f:
+                f.write(content)
+            return True, f"日志「{name}」已导出，共 {len(export_data['items'])} 条记录", content
         except Exception as e:
-            return False, str(e)
+            return False, str(e), None
     
     # ==================== 群组配置操作 ====================
     
