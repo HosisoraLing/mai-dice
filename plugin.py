@@ -251,9 +251,11 @@ class TRPGDicePlugin(MaiBotPlugin):
             text = await self._beautify(text, stream_id)
             await self._log_dice(group_id, nickname, text)
             await self.ctx.send.text(text, stream_id)
+            return True, text, 1
             
         except ValueError as e:
             await self.ctx.send.text(f"掷骰失败: {e}", stream_id)
+            return False, str(e), 0
     
     # ==================== 技能检定命令 ====================
     
@@ -299,9 +301,11 @@ class TRPGDicePlugin(MaiBotPlugin):
             text = await self._beautify(text, stream_id)
             await self._log_dice(group_id, nickname, text)
             await self.ctx.send.text(text, stream_id)
+            return True, text, 1
             
         except Exception as e:
             await self.ctx.send.text(f"检定失败: {e}", stream_id)
+            return False, str(e), 0
     
     @Command("rab", pattern=r"^[。.](?:rab|RAB)\s+(\d+)\s+(.+)$", aliases=["。rab", "/rab"])
     async def bonus_dice_cmd(self, **kwargs):
@@ -333,9 +337,11 @@ class TRPGDicePlugin(MaiBotPlugin):
             text = await self._beautify(text, stream_id)
             await self._log_dice(group_id, nickname, text)
             await self.ctx.send.text(text, stream_id)
+            return True, text, 1
             
         except Exception as e:
             await self.ctx.send.text(f"检定失败: {e}", stream_id)
+            return False, str(e), 0
     
     @Command("rap", pattern=r"^[。.](?:rap|RAP)\s+(\d+)\s+(.+)$", aliases=["。rap", "/rap"])
     async def penalty_dice_cmd(self, **kwargs):
@@ -367,9 +373,11 @@ class TRPGDicePlugin(MaiBotPlugin):
             text = await self._beautify(text, stream_id)
             await self._log_dice(group_id, nickname, text)
             await self.ctx.send.text(text, stream_id)
+            return True, text, 1
             
         except Exception as e:
             await self.ctx.send.text(f"检定失败: {e}", stream_id)
+            return False, str(e), 0
     
     # ==================== 理智检定命令 ====================
     
@@ -432,9 +440,11 @@ class TRPGDicePlugin(MaiBotPlugin):
             text = await self._beautify(text, stream_id)
             await self._log_dice(group_id, nickname, text)
             await self.ctx.send.text(text, stream_id)
+            return True, text, 1
             
         except Exception as e:
             await self.ctx.send.text(f"理智检定失败: {e}", stream_id)
+            return False, str(e), 0
     
     @Command("ti", pattern=r"^[。.](?:ti|TI)$", aliases=["。ti", "/ti"])
     async def temporary_crazy_cmd(self, **kwargs):
@@ -450,6 +460,7 @@ class TRPGDicePlugin(MaiBotPlugin):
         text = await self._beautify(text, stream_id)
         await self._log_dice(group_id, nickname, text)
         await self.ctx.send.text(text, stream_id)
+        return True, text, 1
     
     @Command("li", pattern=r"^[。.](?:li|LI)$", aliases=["。li", "/li"])
     async def long_term_crazy_cmd(self, **kwargs):
@@ -465,6 +476,7 @@ class TRPGDicePlugin(MaiBotPlugin):
         text = await self._beautify(text, stream_id)
         await self._log_dice(group_id, nickname, text)
         await self.ctx.send.text(text, stream_id)
+        return True, text, 1
     
     # ==================== 人物卡命令 ====================
     
@@ -594,9 +606,11 @@ class TRPGDicePlugin(MaiBotPlugin):
             
             text = await self._beautify(text, stream_id)
             await self.ctx.send.text(text, stream_id)
+            return True, text, 1
             
         except Exception as e:
             await self.ctx.send.text(f"操作失败: {e}", stream_id)
+            return False, str(e), 0
     
     @Command("st", pattern=r"^[。.](?:st|ST)\s+(.+?)[\s\-]+(.+)$", aliases=["。st", "/st"])
     async def set_attr_cmd(self, **kwargs):
@@ -641,9 +655,11 @@ class TRPGDicePlugin(MaiBotPlugin):
             )
             
             await self.ctx.send.text(f"已更新 {char['name']} 的 {attr_name} 为 {value}", stream_id)
+            return True, f"已更新 {attr_name}", 1
             
         except Exception as e:
             await self.ctx.send.text(f"设置属性失败: {e}", stream_id)
+            return False, str(e), 0
     
     # ==================== 先攻系统命令 ====================
     
@@ -700,9 +716,11 @@ class TRPGDicePlugin(MaiBotPlugin):
             
             text = await self._beautify(text, stream_id)
             await self.ctx.send.text(text, stream_id)
+            return True, text, 1
             
         except Exception as e:
             await self.ctx.send.text(f"先攻掷骰失败: {e}", stream_id)
+            return False, str(e), 0
     
     @Command("init", pattern=r"^[。.](?:init|INIT)(?:\s+(.+))?$", aliases=["。init", "/init"])
     async def init_list_cmd(self, **kwargs):
@@ -750,6 +768,7 @@ class TRPGDicePlugin(MaiBotPlugin):
             text = "用法: .init [clr|del 角色名]"
         
         await self.ctx.send.text(text, stream_id)
+        return True, text, 1
     
     @Command("ed", pattern=r"^[。.](?:ed|ED)$", aliases=["。ed", "/ed"])
     async def end_turn_cmd(self, **kwargs):
@@ -786,6 +805,7 @@ class TRPGDicePlugin(MaiBotPlugin):
         
         text = await self._beautify(text, stream_id)
         await self.ctx.send.text(text, stream_id)
+        return True, text, 1
     
     # ==================== 角色生成命令 ====================
     
@@ -809,6 +829,7 @@ class TRPGDicePlugin(MaiBotPlugin):
         
         text = await self._beautify(text, stream_id)
         await self.ctx.send.text(text, stream_id)
+        return True, text, 1
     
     @Command("dnd", pattern=r"^[。.](?:dnd|DND)(?:\s+(\d+))?$", aliases=["。dnd", "/dnd"])
     async def dnd_character_cmd(self, **kwargs):
@@ -830,6 +851,7 @@ class TRPGDicePlugin(MaiBotPlugin):
         
         text = await self._beautify(text, stream_id)
         await self.ctx.send.text(text, stream_id)
+        return True, text, 1
     
     @Command("en", pattern=r"^[。.](?:en|EN)\s+(.+?)(?:\s+(\d+))?$", aliases=["。en", "/en"])
     async def skill_growth_cmd(self, **kwargs):
@@ -889,9 +911,11 @@ class TRPGDicePlugin(MaiBotPlugin):
             
             text = await self._beautify(text, stream_id)
             await self.ctx.send.text(text, stream_id)
+            return True, text, 1
             
         except Exception as e:
             await self.ctx.send.text(f"技能成长检定失败: {e}", stream_id)
+            return False, str(e), 0
     
     # ==================== 日志管理命令 ====================
     
@@ -982,9 +1006,11 @@ class TRPGDicePlugin(MaiBotPlugin):
                 text = "未知操作，可用: new, on, off, end, del, list, export"
             
             await self.ctx.send.text(text, stream_id)
+            return True, text, 1
             
         except Exception as e:
             await self.ctx.send.text(f"日志操作失败: {e}", stream_id)
+            return False, str(e), 0
     
     # ==================== 杂项命令 ====================
     
@@ -1012,11 +1038,14 @@ class TRPGDicePlugin(MaiBotPlugin):
                     text = f"已切换到规则{rule_type}（{COC_RULES[rule_type]['name']}）"
             
             await self.ctx.send.text(text, stream_id)
+            return True, text, 1
             
         except ValueError:
             await self.ctx.send.text("规则编号必须是1-5的数字", stream_id)
+            return False, "规则编号必须是1-5的数字", 0
         except Exception as e:
             await self.ctx.send.text(f"设置规则失败: {e}", stream_id)
+            return False, str(e), 0
     
     @Command("fireball", pattern=r"^[。.](?:fireball|FIREBALL)(?:\s+(\d+))?$", aliases=["。fireball", "/fireball"])
     async def fireball_cmd(self, **kwargs):
@@ -1029,6 +1058,7 @@ class TRPGDicePlugin(MaiBotPlugin):
         result = fireball(ring)
         result = await self._beautify(result, stream_id)
         await self.ctx.send.text(result, stream_id)
+        return True, result, 1
     
     @Command("jrrp", pattern=r"^[。.](?:jrrp|JRRP)$", aliases=["。jrrp", "/jrrp"])
     async def jrrp_cmd(self, **kwargs):
@@ -1039,6 +1069,7 @@ class TRPGDicePlugin(MaiBotPlugin):
         result = roll_RP(user_id)
         result = await self._beautify(result, stream_id)
         await self.ctx.send.text(result, stream_id)
+        return True, result, 1
     
     @Command("dicehelp", pattern=r"^[。.](?:dicehelp|help|DICEHELP|HELP)$", aliases=["。dicehelp", "/dicehelp", ".help", "/help"])
     async def help_cmd(self, **kwargs):
@@ -1047,6 +1078,7 @@ class TRPGDicePlugin(MaiBotPlugin):
         
         help_text = get_default_output("help")
         await self.ctx.send.text(help_text, stream_id)
+        return True, help_text, 1
     
     # ==================== LLM 工具函数 ====================
     
