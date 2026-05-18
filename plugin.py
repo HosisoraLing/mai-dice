@@ -910,7 +910,17 @@ class TRPGDicePlugin(MaiBotPlugin):
         
         args = args_str.split()
         if not args:
-            await self.ctx.send.text("用法: .log <new|on|off|end|del|list|stat> [参数]", stream_id)
+            await self.ctx.send.text(
+                "日志命令:\n"
+                ".log new <名称> - 创建新日志\n"
+                ".log on - 恢复日志\n"
+                ".log off - 暂停日志\n"
+                ".log end - 结束日志\n"
+                ".log del <名称> - 删除日志\n"
+                ".log list - 列出日志\n"
+                ".log export [名称] - 导出日志",
+                stream_id
+            )
             return
         
         action = args[0].lower()
@@ -921,74 +931,46 @@ class TRPGDicePlugin(MaiBotPlugin):
                     await self.ctx.send.text("用法: .log new <日志名>", stream_id)
                     return
                 log_name = args[1]
-                log_id = await self.storage.create_log(group_id, log_name)
-                if log_id:
-                    text = get_default_output("log_created", log_name=log_name)
-                else:
-                    text = "创建日志失败"
+                success, msg = await self.storage.create_log(group_id, log_name)
+                text = msg
                 
             elif action == "on":
-                if await self.storage.resume_log(group_id):
-                    text = get_default_output("log_resumed")
-                else:
-                    text = get_default_output("log_no_active")
+                name = args[1] if len(args) > 1 else None
+                success, msg = await self.storage.resume_log(group_id, name)
+                text = msg
                     
             elif action == "off":
-                if await self.storage.pause_log(group_id):
-                    text = get_default_output("log_paused")
-                else:
-                    text = get_default_output("log_no_active")
+                success, msg = await self.storage.pause_log(group_id)
+                text = msg
                     
             elif action == "end":
-                log = await self.storage.end_log(group_id)
-                if log:
-                    messages = await self.storage.get_log_messages(group_id, log["name"])
-                    text = get_default_output(
-                        "log_ended",
-                        log_name=log["name"],
-                        message_count=len(messages),
-                    )
-                else:
-                    text = get_default_output("log_no_active")
+                success, msg, log = await self.storage.end_log(group_id)
+                text = msg
                     
-            elif action == "del":
+            elif action in ("del", "delete", "halt"):
                 if len(args) < 2:
-                    await self.ctx.send.text("用法: .log del <日志名>", stream_id)
-                    return
-                log_name = args[1]
-                if await self.storage.delete_log(group_id, log_name):
-                    text = get_default_output("log_deleted", log_name=log_name)
-                else:
-                    text = get_default_output("log_not_found", log_name=log_name)
-                    
-            elif action == "list":
-                logs = await self.storage.list_logs(group_id)
-                if logs:
-                    lines = []
-                    for log in logs:
-                        status = "活动" if log["is_active"] else "已暂停"
-                        lines.append(f"- {log['name']} ({status}, {log['message_count']}条消息)")
-                    text = "日志列表:\n" + '\n'.join(lines)
-                else:
-                    text = "还没有日志记录"
-                    
-            elif action == "stat":
-                if len(args) < 2:
-                    log = await self.storage.get_active_log(group_id)
+                    # 如果没有指定名称，删除未完成的会话
+                    success, msg = await self.storage.halt_log(group_id)
+                    text = msg
                 else:
                     log_name = args[1]
-                    logs = await self.storage.list_logs(group_id)
-                    log = next((l for l in logs if l["name"] == log_name), None)
-                
-                if log:
-                    messages = await self.storage.get_log_messages(group_id, log["name"])
-                    dice_count = sum(1 for m in messages if m.get("is_dice"))
-                    text = f"日志「{log['name']}」\n消息数: {len(messages)}\n骰子数: {dice_count}"
+                    success, msg = await self.storage.delete_log(group_id, log_name)
+                    text = msg
+                    
+            elif action == "list":
+                lines = await self.storage.list_logs(group_id)
+                text = "日志列表:\n" + '\n'.join(lines)
+                    
+            elif action in ("export", "get"):
+                if len(args) < 2:
+                    text = "用法: .log export <日志名>"
                 else:
-                    text = get_default_output("log_not_found")
+                    log_name = args[1]
+                    success, msg = await self.storage.export_log(group_id, log_name)
+                    text = msg if success else f"导出失败: {msg}"
                     
             else:
-                text = "未知操作，可用: new, on, off, end, del, list, stat"
+                text = "未知操作，可用: new, on, off, end, del, list, export"
             
             await self.ctx.send.text(text, stream_id)
             
