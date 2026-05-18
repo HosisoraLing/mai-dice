@@ -14,21 +14,16 @@ MaiBot TRPG 骰娘插件
 
 import time
 import random
-from typing import Any
+from typing import Any, ClassVar
 
-from maibot_sdk import MaiBotPlugin, Command, Tool, PluginConfigBase, Field
+from maibot_sdk import MaiBotPlugin, Command, Tool, PluginConfigBase, Field, CONFIG_RELOAD_SCOPE_SELF
 from maibot_sdk.types import ToolParameterInfo, ToolParamType
 
-from .component import dice
 from .component.dice import roll, skill_check, sanity_check, roll_initiative, fireball, roll_RP
-from .component.character import (
-    Character, CharacterManager, 
-    roll_character, format_character,
-    roll_dnd_character, format_dnd_character,
-)
-from .component.rules import check_skill_result, modify_coc_great_sf_rule_command
-from .component.log import JSONLoggerCore, get_temporary_crazy_symptom, get_long_term_crazy_symptom
-from .component.output import set_config, get_config, get_default_output
+from .component.character import roll_character, format_character, roll_dnd_character, format_dnd_character
+from .component.rules import COC_RULES
+from .component.log import get_temporary_crazy_symptom, get_long_term_crazy_symptom
+from .component.output import set_config, get_default_output
 from .component.storage import StorageManager
 
 
@@ -181,7 +176,7 @@ class TRPGDicePlugin(MaiBotPlugin):
     
     async def on_config_update(self, scope: str, config_data: dict, version: str) -> None:
         """配置更新"""
-        if scope == "self":
+        if scope == CONFIG_RELOAD_SCOPE_SELF:
             set_config(config_data)
             self.ctx.logger.info("配置已更新")
     
@@ -197,11 +192,14 @@ class TRPGDicePlugin(MaiBotPlugin):
             
             system_prompt = self.config.llm_mode.system_prompt or "你是一个跑团骰娘，风格活泼可爱。请用简短生动的语言描述掷骰结果。"
             
-            resp = await prov.generate(
+            result = await prov.generate(
                 prompt=raw_text,
                 system_prompt=system_prompt,
             )
-            return resp or raw_text
+            # generate 返回 dict: {"success": True, "response": "...", ...}
+            if isinstance(result, dict) and result.get("success"):
+                return result.get("response", raw_text)
+            return raw_text
         except Exception:
             return raw_text
     
@@ -215,13 +213,6 @@ class TRPGDicePlugin(MaiBotPlugin):
                 content=text,
                 is_dice=True,
             )
-    
-    def _should_log_message(self, text: str) -> bool:
-        """检查消息是否应该记录到日志"""
-        if not text:
-            return False
-        # 过滤以 ( 或 （ 开头的消息
-        return not (text.startswith("(") or text.startswith("（"))
     
     # ==================== 基础掷骰命令 ====================
     
@@ -991,7 +982,6 @@ class TRPGDicePlugin(MaiBotPlugin):
             if command.strip() == " ":
                 # 显示当前规则
                 config = await self.storage.get_group_config(group_id)
-                from .component.rules import COC_RULES
                 current = config.get("coc_rule", 1)
                 text = f"当前使用规则{current}（{COC_RULES[current]['name']}）\n可选规则: 1-5"
             else:
@@ -1001,7 +991,6 @@ class TRPGDicePlugin(MaiBotPlugin):
                     text = "规则编号必须是1-5的数字"
                 else:
                     await self.storage.set_coc_rule(group_id, rule_type)
-                    from .component.rules import COC_RULES
                     text = f"已切换到规则{rule_type}（{COC_RULES[rule_type]['name']}）"
             
             await self.ctx.send.text(text, stream_id)
@@ -1076,10 +1065,10 @@ class TRPGDicePlugin(MaiBotPlugin):
                 text = f"掷骰 {expression} = {result.total}\n{result.detail}"
             
             await self.ctx.send.text(text, stream_id)
-            return {"content": text}
+            return {"success": True, "content": text}
             
         except Exception as e:
-            return {"content": f"掷骰失败: {e}"}
+            return {"success": False, "content": f"掷骰失败: {e}"}
     
     @Tool(
         "skill_check",
@@ -1136,10 +1125,10 @@ class TRPGDicePlugin(MaiBotPlugin):
             text = f"进行{skill_name}检定: {roll_value}/{skill_value} {result_type}！"
             
             await self.ctx.send.text(text, stream_id)
-            return {"content": text}
+            return {"success": True, "content": text}
             
         except Exception as e:
-            return {"content": f"检定失败: {e}"}
+            return {"success": False, "content": f"检定失败: {e}"}
 
 
 def create_plugin():
