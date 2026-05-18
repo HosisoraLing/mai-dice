@@ -157,6 +157,13 @@ class TRPGDicePlugin(MaiBotPlugin):
                 is_dice=True,
             )
     
+    def _should_log_message(self, text: str) -> bool:
+        """检查消息是否应该记录到日志"""
+        if not text:
+            return False
+        # 过滤以 ( 或 （ 开头的消息
+        return not (text.startswith("(") or text.startswith("（"))
+    
     # ==================== 基础掷骰命令 ====================
     
     @Command("r", pattern=r"^\.r\s+(.+)$", aliases=["。r", "/r"])

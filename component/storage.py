@@ -320,6 +320,10 @@ class StorageManager:
     ) -> bool:
         """添加日志消息"""
         try:
+            # 过滤以 ( 或 （ 开头的消息
+            if content and (content.startswith("(") or content.startswith("（")):
+                return False
+            
             log = await self.get_active_log(group_id)
             if log and log.get("is_active"):
                 message = {
