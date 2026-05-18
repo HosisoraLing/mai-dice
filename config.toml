@@ -1,5 +1,7 @@
 # TRPG 骰娘配置文件
 
+[plugin]
+enabled = true
 config_version = "1.0.0"
 
 [dice]
