@@ -105,7 +105,13 @@ class TRPGDicePlugin(MaiBotPlugin):
     
     async def on_load(self) -> None:
         """插件加载"""
-        self.storage = StorageManager(self.ctx)
+        from pathlib import Path
+        
+        # 获取插件数据目录
+        plugin_dir = Path(__file__).parent
+        data_dir = str(plugin_dir / "data" / "storage")
+        
+        self.storage = StorageManager(self.ctx, data_dir)
         await self.storage.initialize()
         set_config(self.get_plugin_config_data())
         self.ctx.logger.info("TRPG 骰娘插件已加载")

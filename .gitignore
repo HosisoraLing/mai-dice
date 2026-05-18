@@ -1,3 +1,42 @@
-maibot-plugin-dev-guide.md
-maibot-trpg-dice-dev-plan.md
+# Python
 __pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+
+# Virtual environment
+.venv/
+venv/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+
+# Storage data (generated at runtime)
+data/storage/
+
+# Local config
+config.local.toml
+*.local.*
+
+# Database
+*.db
+*.sqlite
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temp files
+*.tmp
+*.bak

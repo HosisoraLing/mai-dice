@@ -7,6 +7,7 @@
 import json
 import os
 import time
+from pathlib import Path
 from typing import Any, Optional
 
 
@@ -16,7 +17,7 @@ class StorageManager:
     def __init__(self, ctx, data_dir: str = ""):
         self.ctx = ctx
         self.logger = ctx.logger
-        self.data_dir = data_dir
+        self.data_dir = data_dir or str(Path(__file__).parent.parent / "data" / "storage")
         self._characters: dict[str, dict] = {}  # key: "user_id:group_id:name"
         self._logs: dict[str, dict] = {}  # key: "group_id:name"
         self._group_configs: dict[str, dict] = {}  # key: group_id
