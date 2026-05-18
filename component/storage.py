@@ -320,8 +320,9 @@ class StorageManager:
     ) -> bool:
         """添加日志消息"""
         try:
-            # 过滤以 ( 或 （ 开头的消息
-            if content and (content.startswith("(") or content.startswith("（")):
+            # 过滤第一个非空格字符是 ( 或 （ 的消息
+            stripped = content.lstrip() if content else ""
+            if stripped and (stripped.startswith("(") or stripped.startswith("（")):
                 return False
             
             log = await self.get_active_log(group_id)
