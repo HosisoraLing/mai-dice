@@ -21,7 +21,7 @@
     "max_version": "2.99.99"
   },
   "dependencies": [],
-  "capabilities": ["send_message", "send.text", "send.image", "send.file", "send.custom"],
+  "capabilities": ["send_message", "send.text", "send.image", "send.custom"],
   "i18n": {
     "default_locale": "zh-CN"
   }
