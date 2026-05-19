@@ -15,8 +15,8 @@ MaiDice - MaiBot TRPG 骰娘插件
 import time
 from pathlib import Path
 
-from maibot_sdk import MaiBotPlugin, Command, Tool, PluginConfigBase, Field, CONFIG_RELOAD_SCOPE_SELF
-from maibot_sdk.types import ToolParameterInfo, ToolParamType
+from maibot_sdk import MaiBotPlugin, Command, Tool, PluginConfigBase, Field, CONFIG_RELOAD_SCOPE_SELF, HookHandler
+from maibot_sdk.types import ToolParameterInfo, ToolParamType, HookMode, HookOrder, ErrorPolicy
 
 from .component.dice import roll_RP
 from .component.output import set_config, get_default_output
@@ -192,6 +192,31 @@ class MaiDicePlugin(
         if scope == CONFIG_RELOAD_SCOPE_SELF:
             set_config(config_data)
             self.ctx.logger.info("配置已更新")
+    
+    # ==================== Hook 处理器 ====================
+    
+    @HookHandler(
+        "chat.command.before_execute",
+        name="filter_reply_commands",
+        description="过滤回复消息中的指令",
+        mode=HookMode.BLOCKING,
+        order=HookOrder.EARLY,
+    )
+    async def filter_reply_commands(self, **kwargs):
+        """过滤回复消息中的指令，只响应原指令"""
+        message = kwargs.get("message", {})
+        raw_message = message.get("raw_message", "")
+        
+        # 检查是否是回复消息
+        # 回复消息通常包含引用信息
+        reply_info = message.get("reply") or message.get("quote")
+        if reply_info:
+            # 如果是回复消息，检查消息内容是否是指令
+            # 如果是指令，中止执行
+            if raw_message and raw_message[0] in ['.', '。', '/']:
+                return {"action": "abort"}
+        
+        return {"action": "continue"}
     
     # ==================== 辅助方法 ====================
     
