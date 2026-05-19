@@ -98,21 +98,21 @@ class DiceHandler:
             await self.ctx.send.text("进行了一次暗骰", stream_id)
             
             try:
-                # 尝试获取或创建私聊聊天流
-                private_stream = await self.ctx.chat.open_session(
-                    platform=platform,
-                    chat_type="private",
-                    user_id=user_id,
-                )
+                # 获取所有私聊流，查找目标用户
+                private_streams = await self.ctx.chat.get_private_streams(platform=platform)
                 
-                if private_stream:
-                    private_stream_id = private_stream.get("stream_id", "")
-                    if private_stream_id:
-                        await self.ctx.send.text(text, private_stream_id)
-                    else:
-                        await self.ctx.send.text("私聊发送失败：无法获取 stream_id", stream_id)
-                else:
+                private_stream_id = None
+                if private_streams:
+                    for s in private_streams:
+                        if s.get("user_id") == user_id or s.get("peer_id") == user_id:
+                            private_stream_id = s.get("stream_id")
+                            break
+                
+                if not private_stream_id:
                     await self.ctx.send.text("私聊发送失败：请先与机器人私聊", stream_id)
+                else:
+                    await self.ctx.send.text(text, private_stream_id)
+                    
             except Exception as e:
                 await self.ctx.send.text(f"私聊发送失败: {e}", stream_id)
             
