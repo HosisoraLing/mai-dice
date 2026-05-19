@@ -1,6 +1,7 @@
 # MaiDice 配置文件
 
 [plugin]
+config_version = "1.0.0"
 enabled = true
 
 [dice]
