@@ -1,19 +1,10 @@
 {
   "output": {
     "dice": {
-      "normal": {
-        "success": "{name}掷骰 {result} = {total}",
-        "success_remark": "{name}掷骰 {result} = {total} ({remark})",
-        "error": "掷骰失败: {error}"
-      },
-      "hidden": {
-        "group": "进行了一次暗骰",
-        "success": "暗骰结果:\n{result}",
-        "error": "暗骰失败: {error}"
-      }
+      "success": "{name}掷骰 {result} = {total}",
+      "error": "掷骰失败: {error}"
     },
-    "skill_check": {
-      "normal": "{name}进行{skill_name}检定: {roll_result}/{skill_value} {result}",
+    "skill": {
       "success": "{nickname}进行{skill_name}检定: {roll}/{skill_value} 成功！",
       "fail": "{nickname}进行{skill_name}检定: {roll}/{skill_value} 失败！",
       "critical_success": "{nickname}进行{skill_name}检定: {roll}/{skill_value} 大成功！",
@@ -71,8 +62,7 @@
   "dice": {
     "default_faces": 100,
     "max_count": 100,
-    "max_faces": 10000,
-    "max_repeat": 20
+    "max_faces": 10000
   },
   "coc_rules": {
     "default_rule": 1
@@ -102,26 +92,5 @@
       "强迫行为：调查员出现无法控制的重复行为",
       "分离性障碍：调查员出现人格分裂或身份认同问题"
     ]
-  },
-  "character": {
-    "coc": {
-      "strength": "3d6*5",
-      "constitution": "3d6*5",
-      "size": "(2d6+6)*5",
-      "dexterity": "3d6*5",
-      "appearance": "3d6*5",
-      "intelligence": "(2d6+6)*5",
-      "power": "3d6*5",
-      "education": "(2d6+6)*5",
-      "luck": "3d6*5"
-    },
-    "dnd": {
-      "method": "4d6k3"
-    }
-  },
-  "growth": {
-    "threshold": 0,
-    "dice": "1d10",
-    "max": 99
   }
 }

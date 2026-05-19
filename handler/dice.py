@@ -29,7 +29,7 @@ class DiceHandler:
                 text = f"{nickname}掷骰 {expr}:\n" + '\n'.join(lines)
             else:
                 text = get_default_output(
-                    "dice.normal.success",
+                    "dice.success",
                     name=nickname,
                     result=result.detail,
                     total=result.total,
@@ -67,7 +67,7 @@ class DiceHandler:
             else:
                 text = f"暗骰结果: {expr} = {result.total}\n{result.detail}"
             
-            await self.ctx.send.text(get_default_output("dice.hidden.group"), stream_id)
+            await self.ctx.send.text("进行了一次暗骰", stream_id)
             
             try:
                 private_stream = await self.ctx.chat.get_stream_by_user_id(user_id)

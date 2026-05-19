@@ -80,11 +80,62 @@ class NapCatConfig(PluginConfigBase):
     token: str = Field(default="", description="NapCat WebSocket Token")
 
 
+class DiceOutputConfig(PluginConfigBase):
+    """掷骰输出模板"""
+
+    __ui_label__ = "掷骰输出"
+    __ui_icon__ = "message-square"
+    __ui_order__ = 2
+
+    success: str = Field(
+        default="{name}掷骰 {result} = {total}",
+        description="掷骰成功模板",
+        json_schema_extra={"placeholder": "可用变量: {name} {result} {total}"}
+    )
+
+
+class SkillOutputConfig(PluginConfigBase):
+    """技能检定输出模板"""
+
+    __ui_label__ = "技能检定输出"
+    __ui_icon__ = "check-circle"
+    __ui_order__ = 2
+
+    success: str = Field(
+        default="{nickname}进行{skill_name}检定: {roll}/{skill_value} 成功！",
+        description="检定成功模板"
+    )
+    fail: str = Field(
+        default="{nickname}进行{skill_name}检定: {roll}/{skill_value} 失败！",
+        description="检定失败模板"
+    )
+    critical_success: str = Field(
+        default="{nickname}进行{skill_name}检定: {roll}/{skill_value} 大成功！",
+        description="大成功模板"
+    )
+    critical_fail: str = Field(
+        default="{nickname}进行{skill_name}检定: {roll}/{skill_value} 大失败！",
+        description="大失败模板"
+    )
+
+
+class OutputConfig(PluginConfigBase):
+    """输出模板配置"""
+
+    __ui_label__ = "文案设置"
+    __ui_icon__ = "edit"
+    __ui_order__ = 2
+
+    dice: DiceOutputConfig = Field(default_factory=DiceOutputConfig)
+    skill: SkillOutputConfig = Field(default_factory=SkillOutputConfig)
+
+
 class MaiDiceConfig(PluginConfigBase):
     """MaiDice 配置"""
 
     plugin: PluginSectionConfig = Field(default_factory=PluginSectionConfig)
     dice: DiceConfig = Field(default_factory=DiceConfig)
+    output: OutputConfig = Field(default_factory=OutputConfig)
     llm_mode: LLMConfig = Field(default_factory=LLMConfig)
     napcat: NapCatConfig = Field(default_factory=NapCatConfig)
 

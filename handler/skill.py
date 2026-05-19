@@ -21,13 +21,13 @@ class SkillHandler:
             roll_value, result_type = skill_check(skill_value)
             
             if result_type == "大成功":
-                text = get_default_output("skill_check.critical_success", nickname=nickname, skill_name=skill_name, roll=roll_value, skill_value=skill_value)
+                text = get_default_output("skill.critical_success", nickname=nickname, skill_name=skill_name, roll=roll_value, skill_value=skill_value)
             elif result_type == "大失败":
-                text = get_default_output("skill_check.critical_fail", nickname=nickname, skill_name=skill_name, roll=roll_value, skill_value=skill_value)
+                text = get_default_output("skill.critical_fail", nickname=nickname, skill_name=skill_name, roll=roll_value, skill_value=skill_value)
             elif result_type == "成功":
-                text = get_default_output("skill_check.success", nickname=nickname, skill_name=skill_name, roll=roll_value, skill_value=skill_value)
+                text = get_default_output("skill.success", nickname=nickname, skill_name=skill_name, roll=roll_value, skill_value=skill_value)
             else:
-                text = get_default_output("skill_check.fail", nickname=nickname, skill_name=skill_name, roll=roll_value, skill_value=skill_value)
+                text = get_default_output("skill.fail", nickname=nickname, skill_name=skill_name, roll=roll_value, skill_value=skill_value)
             
             text = await self._beautify(text, stream_id)
             await self._log_dice(group_id, nickname, text)
@@ -54,7 +54,7 @@ class SkillHandler:
         try:
             roll_value, result_type = skill_check(skill_value, bonus_dice=dice_count)
             text = get_default_output(
-                "skill_check.bonus_dice",
+                "skill.bonus_dice",
                 nickname=nickname, skill_name=skill_name, dice_count=dice_count,
                 roll=roll_value, skill_value=skill_value, result_type=result_type,
             )
@@ -84,7 +84,7 @@ class SkillHandler:
         try:
             roll_value, result_type = skill_check(skill_value, penalty_dice=dice_count)
             text = get_default_output(
-                "skill_check.penalty_dice",
+                "skill.penalty_dice",
                 nickname=nickname, skill_name=skill_name, dice_count=dice_count,
                 roll=roll_value, skill_value=skill_value, result_type=result_type,
             )

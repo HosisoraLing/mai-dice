@@ -11,6 +11,25 @@ max_dice_count = 100
 # 最大骰子面数
 max_faces = 10000
 
+[output.dice]
+# 掷骰成功模板
+# 可用变量: {name} 用户昵称, {result} 掷骰详情, {total} 总值
+success = "{name}掷骰 {result} = {total}"
+
+[output.skill]
+# 技能检定成功模板
+success = "{nickname}进行{skill_name}检定: {roll}/{skill_value} 成功！"
+# 技能检定失败模板
+fail = "{nickname}进行{skill_name}检定: {roll}/{skill_value} 失败！"
+# 大成功模板
+critical_success = "{nickname}进行{skill_name}检定: {roll}/{skill_value} 大成功！"
+# 大失败模板
+critical_fail = "{nickname}进行{skill_name}检定: {roll}/{skill_value} 大失败！"
+# 奖励骰检定模板
+bonus_dice = "{nickname}进行{skill_name}检定(奖励骰x{dice_count}): {roll}/{skill_value} {result_type}！"
+# 惩罚骰检定模板
+penalty_dice = "{nickname}进行{skill_name}检定(惩罚骰x{dice_count}): {roll}/{skill_value} {result_type}！"
+
 [llm_mode]
 # 是否启用 LLM 美化模式
 enabled = false
