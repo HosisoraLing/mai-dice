@@ -75,9 +75,11 @@ class DiceHandler:
         matched = kwargs.get("matched_groups", {})
         expr = (matched.get("expr") or "").strip()
         stream_id = kwargs.get("stream_id", "")
-        user_id = kwargs.get("message", {}).get("user_info", {}).get("user_id", "")
-        nickname = kwargs.get("message", {}).get("user_info", {}).get("user_nickname", "调查员")
-        group_id = kwargs.get("message", {}).get("group_id", "")
+        message = kwargs.get("message", {})
+        user_id = message.get("user_info", {}).get("user_id", "")
+        nickname = message.get("user_info", {}).get("user_nickname", "调查员")
+        group_id = message.get("group_id", "")
+        platform = message.get("platform", "qq")
         
         if not expr:
             expr = "1d100"
@@ -96,7 +98,7 @@ class DiceHandler:
             await self.ctx.send.text("进行了一次暗骰", stream_id)
             
             try:
-                private_stream = await self.ctx.chat.get_stream_by_user_id(user_id)
+                private_stream = await self.ctx.chat.get_stream_by_user_id(user_id, platform=platform)
                 if private_stream:
                     private_stream_id = private_stream.get("stream_id", "")
                     if private_stream_id:
