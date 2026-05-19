@@ -1,0 +1,127 @@
+{
+  "output": {
+    "dice": {
+      "normal": {
+        "success": "{name}掷骰 {result} = {total}",
+        "success_remark": "{name}掷骰 {result} = {total} ({remark})",
+        "error": "掷骰失败: {error}"
+      },
+      "hidden": {
+        "group": "进行了一次暗骰",
+        "success": "暗骰结果:\n{result}",
+        "error": "暗骰失败: {error}"
+      }
+    },
+    "skill_check": {
+      "normal": "{name}进行{skill_name}检定: {roll_result}/{skill_value} {result}",
+      "success": "{nickname}进行{skill_name}检定: {roll}/{skill_value} 成功！",
+      "fail": "{nickname}进行{skill_name}检定: {roll}/{skill_value} 失败！",
+      "critical_success": "{nickname}进行{skill_name}检定: {roll}/{skill_value} 大成功！",
+      "critical_fail": "{nickname}进行{skill_name}检定: {roll}/{skill_value} 大失败！",
+      "bonus_dice": "{nickname}进行{skill_name}检定(奖励骰x{dice_count}): {roll}/{skill_value} {result_type}！",
+      "penalty_dice": "{nickname}进行{skill_name}检定(惩罚骰x{dice_count}): {roll}/{skill_value} {result_type}！"
+    },
+    "san_check": {
+      "success": "{nickname}进行理智检定: {roll}/{san_value} 成功！理智损失{loss}点。",
+      "fail": "{nickname}进行理智检定: {roll}/{san_value} 失败！理智损失{loss}点。",
+      "zero": "理智归零！调查员陷入永久疯狂！"
+    },
+    "character": {
+      "created": "人物卡「{name}」创建成功！",
+      "switched": "已切换到人物卡「{name}」",
+      "deleted": "人物卡「{name}」已删除",
+      "not_found": "未找到人物卡「{name}」",
+      "exists": "人物卡「{name}」已存在",
+      "no_current": "当前没有选择人物卡，请先使用 .pc create 创建"
+    },
+    "initiative": {
+      "roll": "{nickname}掷先攻: {roll}",
+      "roll_adjust": "{nickname}掷先攻: {roll} (调整值{adjust:+d})",
+      "list": "当前先攻顺序:\n{list}",
+      "empty": "先攻列表为空",
+      "turn_end": "当前回合结束，轮到 {next_char} 行动！",
+      "turn_start": "新回合开始！{first_char} 先行动。",
+      "deleted": "已从先攻列表中移除 {name}",
+      "cleared": "先攻列表已清空"
+    },
+    "crazy": {
+      "temporary": "【临时疯狂】\n{symptom}",
+      "long_term": "【长期疯狂】\n{symptom}"
+    },
+    "skill_growth": {
+      "success": "技能「{skill_name}」成长检定: {roll}/{skill_value} 成功！技能值增加 {growth} 点，当前 {new_value}",
+      "fail": "技能「{skill_name}」成长检定: {roll}/{skill_value} 失败，技能值不变"
+    },
+    "log": {
+      "created": "日志「{log_name}」已创建并开始记录",
+      "resumed": "日志记录已恢复",
+      "paused": "日志记录已暂停",
+      "ended": "日志记录已结束，共 {message_count} 条消息",
+      "deleted": "日志「{log_name}」已删除",
+      "no_active": "当前没有活动的日志会话"
+    },
+    "coc_rule": {
+      "current": "当前使用规则{rule}（{rule_name}）\n可选规则: 1-5",
+      "switched": "已切换到规则{rule}（{rule_name}）"
+    },
+    "fireball": "{ring}环火球术: {dice_count}d6 = {damage} 火焰伤害",
+    "jrrp": "今日人品: {rp}\n{desc}",
+    "help": "基础掷骰\n`.r 1d100` - 掷 1 个 100 面骰\n`.r 3d6+2d4-1d8` - 掷 3 个 6 面骰 + 2 个 4 面骰 - 1 个 8 面骰\n`.r 3#1d20` - 掷 1d20 骰 3 次\n`.r 10d6k5` - 掷 10 个 6 面骰，保留最高 5 个\n`.dh 1d100` - 暗骰，结果私聊发送\n\n人物卡管理\n`.pc create <名称>` - 创建人物卡\n`.pc show` - 显示当前人物卡\n`.pc list` - 列出所有人物卡\n`.pc change <名称>` - 切换人物卡\n`.pc update <属性> <值>` - 更新人物卡属性\n`.pc delete <名称>` - 删除人物卡\n\nCoC 相关\n`.coc x` - 生成 x 个 CoC 角色数据\n`.ra 技能名` - 进行技能骰\n`.rap n 技能名` - 带 n 个惩罚骰的技能骰\n`.rab n 技能名` - 带 n 个奖励骰的技能骰\n`.sc 1d6/1d10` - 进行 San Check\n`.ti` - 生成临时疯狂症状\n`.li` - 生成长期疯狂症状\n`.en 技能名 [技能值]` - 技能成长\n`.setcoc 规则编号` - 设置COC规则\n\n先攻系统\n`.ri` - 掷先攻\n`.ri +3` - 掷先攻（+3调整值）\n`.init` - 查看先攻列表\n`.init clr` - 清空先攻列表\n`.ed` - 结束当前回合\n\n日志管理\n`.log new <日志名>` - 开始新的日志会话\n`.log off` - 暂停日志\n`.log on` - 恢复日志\n`.log end` - 结束日志\n`.log del <日志名>` - 删除日志\n`.log list` - 列出日志\n`.log export <日志名>` - 导出日志\n\n其他\n`.fireball n` - 施放 n 环火球术\n`.jrrp` - 今日人品\n`.dicehelp` - 显示帮助"
+  },
+  "dice": {
+    "default_faces": 100,
+    "max_count": 100,
+    "max_faces": 10000,
+    "max_repeat": 20
+  },
+  "coc_rules": {
+    "default_rule": 1
+  },
+  "sanity": {
+    "temporary_crazy": [
+      "失忆症：调查员忘记自己是谁，正在做什么",
+      "假性残疾：调查员出现心因性的失明或失聪",
+      "暴力倾向：调查员变得极具攻击性，可能会攻击附近的人",
+      "偏执妄想：调查员陷入严重的偏执，认为有人在监视或迫害自己",
+      "人际依赖：调查员过度依赖他人，无法独立行动",
+      "昏厥：调查员失去意识，持续数分钟到数小时",
+      "逃避行为：调查员试图逃离现场，可能会使用任何方式",
+      "歇斯底里：调查员陷入狂笑或痛哭，无法控制情绪",
+      "恐惧症：调查员产生强烈的恐惧，可能是对特定物体或情境",
+      "躁狂症：调查员陷入异常兴奋，可能会做出危险行为"
+    ],
+    "long_term_crazy": [
+      "健忘症：调查员忘记部分重要记忆，可能是最近的事件",
+      "反社会行为：调查员表现出反社会倾向，不再关心道德或法律",
+      "恐惧症：调查员产生新的持久恐惧，如恐高、幽闭恐惧等",
+      "躁狂/抑郁：调查员情绪波动剧烈，时而亢奋时而低落",
+      "偏执狂：调查员持续多疑，认为周围的人都在针对自己",
+      "敏感化：调查员对某些刺激过度敏感，如噪音、光线等",
+      "性功能障碍：调查员出现性功能问题，可能是心理因素导致",
+      "躯体转换障碍：调查员出现身体症状，但没有生理原因",
+      "强迫行为：调查员出现无法控制的重复行为",
+      "分离性障碍：调查员出现人格分裂或身份认同问题"
+    ]
+  },
+  "character": {
+    "coc": {
+      "strength": "3d6*5",
+      "constitution": "3d6*5",
+      "size": "(2d6+6)*5",
+      "dexterity": "3d6*5",
+      "appearance": "3d6*5",
+      "intelligence": "(2d6+6)*5",
+      "power": "3d6*5",
+      "education": "(2d6+6)*5",
+      "luck": "3d6*5"
+    },
+    "dnd": {
+      "method": "4d6k3"
+    }
+  },
+  "growth": {
+    "threshold": 0,
+    "dice": "1d10",
+    "max": 99
+  }
+}

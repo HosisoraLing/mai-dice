@@ -1,16 +1,16 @@
 {
   "manifest_version": 2,
-  "id": "com.hosisora.trpg-dice",
+  "id": "com.hosisora.mai-dice",
   "version": "1.0.0",
-  "name": "TRPG 骰娘",
-  "description": "TRPG 跑团骰子插件，支持掷骰、技能检定、人物卡管理、先攻系统和日志记录",
+  "name": "MaiDice",
+  "description": "MaiBot TRPG 骰娘插件，支持掷骰、技能检定、人物卡管理、先攻系统和日志记录",
   "author": {
     "name": "HosisoraLing",
     "url": "https://github.com/HosisoraLing"
   },
   "license": "MIT",
   "urls": {
-    "repository": "https://github.com/HosisoraLing/maibot_trpg_dice"
+    "repository": "https://github.com/HosisoraLing/mai-dice"
   },
   "host_application": {
     "min_version": "1.0.0",
