@@ -28,12 +28,39 @@ class DiceHandler:
                     lines.append(f"第{i}次: {r.detail} = {r.total}")
                 text = f"{nickname}掷骰 {expr}:\n" + '\n'.join(lines)
             else:
-                text = get_default_output(
-                    "dice.success",
-                    name=nickname,
-                    result=result.detail,
-                    total=result.total,
-                )
+                # 判断大成功/大失败（针对 d100）
+                is_d100 = "d100" in expr.lower() or "d%" in expr.lower()
+                is_single_dice = result.total <= 100  # 单次掷骰结果
+                
+                if is_d100 and is_single_dice:
+                    if result.total == 1:
+                        text = get_default_output(
+                            "dice.critical_success",
+                            name=nickname,
+                            result=result.detail,
+                            total=result.total,
+                        )
+                    elif result.total == 100:
+                        text = get_default_output(
+                            "dice.critical_fail",
+                            name=nickname,
+                            result=result.detail,
+                            total=result.total,
+                        )
+                    else:
+                        text = get_default_output(
+                            "dice.success",
+                            name=nickname,
+                            result=result.detail,
+                            total=result.total,
+                        )
+                else:
+                    text = get_default_output(
+                        "dice.success",
+                        name=nickname,
+                        result=result.detail,
+                        total=result.total,
+                    )
             
             text = await self._beautify(text, stream_id)
             await self._log_dice(group_id, nickname, text)

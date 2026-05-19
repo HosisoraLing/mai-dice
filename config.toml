@@ -15,6 +15,10 @@ max_faces = 10000
 # 掷骰成功模板
 # 可用变量: {name} 用户昵称, {result} 掷骰详情, {total} 总值
 success = "{name}掷骰 {result} = {total}"
+# 大成功模板
+critical_success = "{name}掷骰 {result} = {total} 大成功！"
+# 大失败模板
+critical_fail = "{name}掷骰 {result} = {total} 大失败！"
 
 [output.skill]
 # 技能检定成功模板

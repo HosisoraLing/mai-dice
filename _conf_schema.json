@@ -2,6 +2,8 @@
   "output": {
     "dice": {
       "success": "{name}掷骰 {result} = {total}",
+      "critical_success": "{name}掷骰 {result} = {total} 大成功！",
+      "critical_fail": "{name}掷骰 {result} = {total} 大失败！",
       "error": "掷骰失败: {error}"
     },
     "skill": {

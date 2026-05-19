@@ -92,6 +92,14 @@ class DiceOutputConfig(PluginConfigBase):
         description="掷骰成功模板",
         json_schema_extra={"placeholder": "可用变量: {name} {result} {total}"}
     )
+    critical_success: str = Field(
+        default="{name}掷骰 {result} = {total} 大成功！",
+        description="大成功模板"
+    )
+    critical_fail: str = Field(
+        default="{name}掷骰 {result} = {total} 大失败！",
+        description="大失败模板"
+    )
 
 
 class SkillOutputConfig(PluginConfigBase):
