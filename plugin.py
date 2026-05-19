@@ -216,11 +216,11 @@ class TRPGDicePlugin(MaiBotPlugin):
     
     # ==================== 基础掷骰命令 ====================
     
-    @Command("r", pattern=r"^[。.](?:r|R)\s*(.*)?$", aliases=["。r", "/r"])
+    @Command("r", pattern=r"^[。.](?:r|R)\s*(?P<expr>.*)?$", aliases=["。r", "/r"])
     async def roll_cmd(self, **kwargs):
         """基础掷骰"""
         matched = kwargs.get("matched_groups", {})
-        expr = (matched.get("1") or "").strip()
+        expr = (matched.get("expr") or "").strip()
         stream_id = kwargs.get("stream_id", "")
         nickname = kwargs.get("message", {}).get("user_info", {}).get("user_nickname", "调查员")
         group_id = kwargs.get("message", {}).get("group_id", "")
@@ -259,12 +259,12 @@ class TRPGDicePlugin(MaiBotPlugin):
     
     # ==================== 技能检定命令 ====================
     
-    @Command("ra", pattern=r"^[。.](?:ra|RA)\s+(.+?)(?:\s+(\d+))?$", aliases=["。ra", "/ra"])
+    @Command("ra", pattern=r"^[。.](?:ra|RA)\s+(?P<skill>.+?)(?:\s+(?P<value>\d+))?$", aliases=["。ra", "/ra"])
     async def skill_check_cmd(self, **kwargs):
         """技能检定"""
         matched = kwargs.get("matched_groups", {})
-        skill_name = matched.get("1", "").strip()
-        skill_value = int(matched.get("2", "50") or "50")
+        skill_name = (matched.get("skill") or "").strip()
+        skill_value = int(matched.get("value") or "50")
         stream_id = kwargs.get("stream_id", "")
         nickname = kwargs.get("message", {}).get("user_info", {}).get("user_nickname", "调查员")
         group_id = kwargs.get("message", {}).get("group_id", "")
@@ -307,12 +307,12 @@ class TRPGDicePlugin(MaiBotPlugin):
             await self.ctx.send.text(f"检定失败: {e}", stream_id)
             return False, str(e), 0
     
-    @Command("rab", pattern=r"^[。.](?:rab|RAB)\s+(\d+)\s+(.+)$", aliases=["。rab", "/rab"])
+    @Command("rab", pattern=r"^[。.](?:rab|RAB)\s+(?P<dice>\d+)\s+(?P<skill>.+)$", aliases=["。rab", "/rab"])
     async def bonus_dice_cmd(self, **kwargs):
         """奖励骰检定"""
         matched = kwargs.get("matched_groups", {})
-        dice_count = int(matched.get("1", "1"))
-        skill_name = matched.get("2", "").strip()
+        dice_count = int(matched.get("dice") or "1")
+        skill_name = (matched.get("skill") or "").strip()
         stream_id = kwargs.get("stream_id", "")
         user_id = kwargs.get("message", {}).get("user_info", {}).get("user_id", "")
         nickname = kwargs.get("message", {}).get("user_info", {}).get("user_nickname", "调查员")
@@ -343,12 +343,12 @@ class TRPGDicePlugin(MaiBotPlugin):
             await self.ctx.send.text(f"检定失败: {e}", stream_id)
             return False, str(e), 0
     
-    @Command("rap", pattern=r"^[。.](?:rap|RAP)\s+(\d+)\s+(.+)$", aliases=["。rap", "/rap"])
+    @Command("rap", pattern=r"^[。.](?:rap|RAP)\s+(?P<dice>\d+)\s+(?P<skill>.+)$", aliases=["。rap", "/rap"])
     async def penalty_dice_cmd(self, **kwargs):
         """惩罚骰检定"""
         matched = kwargs.get("matched_groups", {})
-        dice_count = int(matched.get("1", "1"))
-        skill_name = matched.get("2", "").strip()
+        dice_count = int(matched.get("dice") or "1")
+        skill_name = (matched.get("skill") or "").strip()
         stream_id = kwargs.get("stream_id", "")
         user_id = kwargs.get("message", {}).get("user_info", {}).get("user_id", "")
         nickname = kwargs.get("message", {}).get("user_info", {}).get("user_nickname", "调查员")
@@ -381,12 +381,12 @@ class TRPGDicePlugin(MaiBotPlugin):
     
     # ==================== 理智检定命令 ====================
     
-    @Command("sc", pattern=r"^[。.](?:sc|SC)\s+(.+?)/(.+)$", aliases=["。sc", "/sc"])
+    @Command("sc", pattern=r"^[。.](?:sc|SC)\s+(?P<success>.+?)/(?P<fail>.+)$", aliases=["。sc", "/sc"])
     async def sanity_check_cmd(self, **kwargs):
         """理智检定"""
         matched = kwargs.get("matched_groups", {})
-        success_formula = matched.get("1", "").strip()
-        fail_formula = matched.get("2", "").strip()
+        success_formula = (matched.get("success") or "").strip()
+        fail_formula = (matched.get("fail") or "").strip()
         stream_id = kwargs.get("stream_id", "")
         nickname = kwargs.get("message", {}).get("user_info", {}).get("user_nickname", "调查员")
         user_id = kwargs.get("message", {}).get("user_info", {}).get("user_id", "")
@@ -480,11 +480,11 @@ class TRPGDicePlugin(MaiBotPlugin):
     
     # ==================== 人物卡命令 ====================
     
-    @Command("pc", pattern=r"^[。.](?:pc|PC)\s+(.+)$", aliases=["。pc", "/pc"])
+    @Command("pc", pattern=r"^[。.](?:pc|PC)\s+(?P<args>.+)$", aliases=["。pc", "/pc"])
     async def character_cmd(self, **kwargs):
         """人物卡管理"""
         matched = kwargs.get("matched_groups", {})
-        args_str = matched.get("1", "").strip()
+        args_str = (matched.get("args") or "").strip()
         stream_id = kwargs.get("stream_id", "")
         user_id = kwargs.get("message", {}).get("user_info", {}).get("user_id", "")
         group_id = kwargs.get("message", {}).get("group_id", "")
@@ -612,12 +612,12 @@ class TRPGDicePlugin(MaiBotPlugin):
             await self.ctx.send.text(f"操作失败: {e}", stream_id)
             return False, str(e), 0
     
-    @Command("st", pattern=r"^[。.](?:st|ST)\s+(.+?)[\s\-]+(.+)$", aliases=["。st", "/st"])
+    @Command("st", pattern=r"^[。.](?:st|ST)\s+(?P<attr>.+?)[\s\-]+(?P<value>.+)$", aliases=["。st", "/st"])
     async def set_attr_cmd(self, **kwargs):
         """设置属性"""
         matched = kwargs.get("matched_groups", {})
-        attr_name = matched.get("1", "").strip()
-        value_str = matched.get("2", "").strip()
+        attr_name = (matched.get("attr") or "").strip()
+        value_str = (matched.get("value") or "").strip()
         stream_id = kwargs.get("stream_id", "")
         user_id = kwargs.get("message", {}).get("user_info", {}).get("user_id", "")
         group_id = kwargs.get("message", {}).get("group_id", "")
@@ -663,11 +663,11 @@ class TRPGDicePlugin(MaiBotPlugin):
     
     # ==================== 先攻系统命令 ====================
     
-    @Command("ri", pattern=r"^[。.](?:ri|RI)(?:\s+(.+))?$", aliases=["。ri", "/ri"])
+    @Command("ri", pattern=r"^[。.](?:ri|RI)(?:\s+(?P<args>.+))?$", aliases=["。ri", "/ri"])
     async def initiative_cmd(self, **kwargs):
         """掷先攻"""
         matched = kwargs.get("matched_groups", {})
-        args_str = (matched.get("1") or "").strip()
+        args_str = (matched.get("args") or "").strip()
         stream_id = kwargs.get("stream_id", "")
         user_id = kwargs.get("message", {}).get("user_info", {}).get("user_id", "")
         nickname = kwargs.get("message", {}).get("user_info", {}).get("user_nickname", "调查员")
@@ -722,11 +722,11 @@ class TRPGDicePlugin(MaiBotPlugin):
             await self.ctx.send.text(f"先攻掷骰失败: {e}", stream_id)
             return False, str(e), 0
     
-    @Command("init", pattern=r"^[。.](?:init|INIT)(?:\s+(.+))?$", aliases=["。init", "/init"])
+    @Command("init", pattern=r"^[。.](?:init|INIT)(?:\s+(?P<args>.+))?$", aliases=["。init", "/init"])
     async def init_list_cmd(self, **kwargs):
         """先攻列表管理"""
         matched = kwargs.get("matched_groups", {})
-        args_str = (matched.get("1") or "").strip()
+        args_str = (matched.get("args") or "").strip()
         stream_id = kwargs.get("stream_id", "")
         user_id = kwargs.get("message", {}).get("user_info", {}).get("user_id", "")
         nickname = kwargs.get("message", {}).get("user_info", {}).get("user_nickname", "调查员")
@@ -809,11 +809,11 @@ class TRPGDicePlugin(MaiBotPlugin):
     
     # ==================== 角色生成命令 ====================
     
-    @Command("coc", pattern=r"^[。.](?:coc|COC)(?:\s+(\d+))?$", aliases=["。coc", "/coc"])
+    @Command("coc", pattern=r"^[。.](?:coc|COC)(?:\s+(?P<count>\d+))?$", aliases=["。coc", "/coc"])
     async def coc_character_cmd(self, **kwargs):
         """生成 CoC 角色"""
         matched = kwargs.get("matched_groups", {})
-        count = int(matched.get("1", "1") or "1")
+        count = int(matched.get("count") or "1")
         stream_id = kwargs.get("stream_id", "")
         
         count = min(count, 10)  # 最多10个
@@ -831,11 +831,11 @@ class TRPGDicePlugin(MaiBotPlugin):
         await self.ctx.send.text(text, stream_id)
         return True, text, 1
     
-    @Command("dnd", pattern=r"^[。.](?:dnd|DND)(?:\s+(\d+))?$", aliases=["。dnd", "/dnd"])
+    @Command("dnd", pattern=r"^[。.](?:dnd|DND)(?:\s+(?P<count>\d+))?$", aliases=["。dnd", "/dnd"])
     async def dnd_character_cmd(self, **kwargs):
         """生成 DnD 角色"""
         matched = kwargs.get("matched_groups", {})
-        count = int(matched.get("1", "1") or "1")
+        count = int(matched.get("count") or "1")
         stream_id = kwargs.get("stream_id", "")
         
         count = min(count, 10)
@@ -853,12 +853,12 @@ class TRPGDicePlugin(MaiBotPlugin):
         await self.ctx.send.text(text, stream_id)
         return True, text, 1
     
-    @Command("en", pattern=r"^[。.](?:en|EN)\s+(.+?)(?:\s+(\d+))?$", aliases=["。en", "/en"])
+    @Command("en", pattern=r"^[。.](?:en|EN)\s+(?P<skill>.+?)(?:\s+(?P<value>\d+))?$", aliases=["。en", "/en"])
     async def skill_growth_cmd(self, **kwargs):
         """技能成长"""
         matched = kwargs.get("matched_groups", {})
-        skill_name = matched.get("1", "").strip()
-        skill_value = int(matched.get("2", "0") or "0")
+        skill_name = (matched.get("skill") or "").strip()
+        skill_value = int(matched.get("value") or "0")
         stream_id = kwargs.get("stream_id", "")
         user_id = kwargs.get("message", {}).get("user_info", {}).get("user_id", "")
         group_id = kwargs.get("message", {}).get("group_id", "")
@@ -919,11 +919,11 @@ class TRPGDicePlugin(MaiBotPlugin):
     
     # ==================== 日志管理命令 ====================
     
-    @Command("log", pattern=r"^[。.](?:log|LOG)\s*(.*)?$", aliases=["。log", "/log"])
+    @Command("log", pattern=r"^[。.](?:log|LOG)\s*(?P<args>.*)?$", aliases=["。log", "/log"])
     async def log_cmd(self, **kwargs):
         """日志管理"""
         matched = kwargs.get("matched_groups", {})
-        args_str = matched.get("1", "").strip()
+        args_str = (matched.get("args") or "").strip()
         stream_id = kwargs.get("stream_id", "")
         group_id = kwargs.get("message", {}).get("group_id", "")
         
@@ -1014,11 +1014,11 @@ class TRPGDicePlugin(MaiBotPlugin):
     
     # ==================== 杂项命令 ====================
     
-    @Command("setcoc", pattern=r"^[。.](?:setcoc|SETCOC)(?:\s+(.+))?$", aliases=["。setcoc", "/setcoc"])
+    @Command("setcoc", pattern=r"^[。.](?:setcoc|SETCOC)(?:\s+(?P<args>.+))?$", aliases=["。setcoc", "/setcoc"])
     async def setcoc_cmd(self, **kwargs):
         """设置 CoC 规则"""
         matched = kwargs.get("matched_groups", {})
-        command = (matched.get("1") or " ").strip()
+        command = (matched.get("args") or " ").strip()
         stream_id = kwargs.get("stream_id", "")
         group_id = kwargs.get("message", {}).get("group_id", "")
         
@@ -1047,11 +1047,11 @@ class TRPGDicePlugin(MaiBotPlugin):
             await self.ctx.send.text(f"设置规则失败: {e}", stream_id)
             return False, str(e), 0
     
-    @Command("fireball", pattern=r"^[。.](?:fireball|FIREBALL)(?:\s+(\d+))?$", aliases=["。fireball", "/fireball"])
+    @Command("fireball", pattern=r"^[。.](?:fireball|FIREBALL)(?:\s+(?P<ring>\d+))?$", aliases=["。fireball", "/fireball"])
     async def fireball_cmd(self, **kwargs):
         """火球术"""
         matched = kwargs.get("matched_groups", {})
-        ring = int(matched.get("1", "3") or "3")
+        ring = int(matched.get("ring") or "3")
         stream_id = kwargs.get("stream_id", "")
         
         ring = max(3, min(ring, 20))
