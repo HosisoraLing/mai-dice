@@ -39,6 +39,7 @@ class PluginSectionConfig(PluginConfigBase):
     __ui_icon__ = "package"
     __ui_order__ = 0
 
+    config_version: str = Field(default="1.0.0", description="配置版本号")
     enabled: bool = Field(default=True, description="是否启用插件")
 
 
