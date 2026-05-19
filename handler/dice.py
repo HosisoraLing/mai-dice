@@ -16,8 +16,7 @@ class DiceHandler:
         group_id = kwargs.get("message", {}).get("group_id", "")
         
         if not expr:
-            await self.ctx.send.text("用法: .r <表达式>\n示例: .r 1d100, .r 3d6+5", stream_id)
-            return False, "缺少参数", 0
+            expr = "1d100"
         
         try:
             result = roll(expr)
