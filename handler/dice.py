@@ -101,10 +101,14 @@ class DiceHandler:
                 # 获取所有私聊流，查找目标用户
                 private_streams = await self.ctx.chat.get_private_streams(platform=platform)
                 
+                self.ctx.logger.info(f"私聊流列表: {private_streams}")
+                self.ctx.logger.info(f"目标用户ID: {user_id}")
+                
                 private_stream_id = None
                 if private_streams:
                     for s in private_streams:
-                        if s.get("user_id") == user_id or s.get("peer_id") == user_id:
+                        stream_user_id = s.get("user_id") or s.get("peer_id") or s.get("user_info", {}).get("user_id")
+                        if stream_user_id == user_id:
                             private_stream_id = s.get("stream_id")
                             break
                 
