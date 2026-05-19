@@ -13,7 +13,6 @@ MaiDice - MaiBot TRPG 骰娘插件
 """
 
 import time
-from typing import Any, ClassVar
 from pathlib import Path
 
 from maibot_sdk import MaiBotPlugin, Command, Tool, PluginConfigBase, Field, CONFIG_RELOAD_SCOPE_SELF

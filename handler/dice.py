@@ -117,8 +117,6 @@ class DiceHandler:
     
     async def initiative_cmd(self, **kwargs):
         """掷先攻"""
-        from ..component.dice import roll_initiative
-        
         matched = kwargs.get("matched_groups", {})
         args_str = (matched.get("args") or "").strip()
         stream_id = kwargs.get("stream_id", "")
