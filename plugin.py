@@ -257,6 +257,55 @@ class TRPGDicePlugin(MaiBotPlugin):
             await self.ctx.send.text(f"掷骰失败: {e}", stream_id)
             return False, str(e), 0
     
+    # ==================== 暗骰命令 ====================
+    
+    @Command("dh", pattern=r"^[。.](?:dh|DH)\s*(?P<expr>.*)?$", aliases=["。dh", "/dh"])
+    async def hidden_roll_cmd(self, **kwargs):
+        """暗骰 - 结果仅私聊发送"""
+        matched = kwargs.get("matched_groups", {})
+        expr = (matched.get("expr") or "").strip()
+        stream_id = kwargs.get("stream_id", "")
+        user_id = kwargs.get("message", {}).get("user_info", {}).get("user_id", "")
+        nickname = kwargs.get("message", {}).get("user_info", {}).get("user_nickname", "调查员")
+        group_id = kwargs.get("message", {}).get("group_id", "")
+        
+        if not expr:
+            expr = "1d100"
+        
+        try:
+            result = roll(expr)
+            
+            if isinstance(result, list):
+                lines = []
+                for i, r in enumerate(result, 1):
+                    lines.append(f"第{i}次: {r.detail} = {r.total}")
+                text = f"暗骰结果:\n" + '\n'.join(lines)
+            else:
+                text = f"暗骰结果: {expr} = {result.total}\n{result.detail}"
+            
+            # 在群里发送提示
+            await self.ctx.send.text(f"{nickname} 进行了一次暗骰", stream_id)
+            
+            # 获取私聊流并发送结果
+            try:
+                private_stream = await self.ctx.chat.get_stream_by_user_id(user_id)
+                if private_stream:
+                    private_stream_id = private_stream.get("stream_id", "")
+                    if private_stream_id:
+                        await self.ctx.send.text(text, private_stream_id)
+                    else:
+                        await self.ctx.send.text("私聊发送失败，无法获取 stream_id", stream_id)
+                else:
+                    await self.ctx.send.text("私聊发送失败，请先与机器人私聊", stream_id)
+            except Exception as e:
+                await self.ctx.send.text(f"私聊发送失败: {e}", stream_id)
+            
+            return True, "暗骰已发送", 1
+            
+        except ValueError as e:
+            await self.ctx.send.text(f"掷骰失败: {e}", stream_id)
+            return False, str(e), 0
+    
     # ==================== 技能检定命令 ====================
     
     @Command("ra", pattern=r"^[。.](?:ra|RA)\s+(?P<skill>.+?)(?:\s+(?P<value>\d+))?$", aliases=["。ra", "/ra"])
